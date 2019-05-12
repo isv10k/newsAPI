@@ -3,6 +3,45 @@ from news_auth import NewsApiAuth
 from concurrent.futures import ThreadPoolExecutor, as_completed
 
 
+class NewsAPI:
+
+    def __init__(self, api_key: str):
+        self.auth = NewsApiAuth(api_key=api_key)
+
+    def categories_list_response(self, categories_list=[], country='', language='', page_size='', page=''):
+        """Returns response for search by categories list"""
+
+        payload = make_params(country, language, page_size, page)
+
+        parameter_name = 'category'
+
+        response = threaded_request_execution(categories_list, parameter_name, payload, self.auth)
+
+        return response
+
+    def key_words_response(self, keywords_list=[], country='', language='', page_size='', page=''):
+        """Return response for search by key worlds"""
+
+        payload = make_params(country, language, page_size, page)
+
+        parameter_name = 'q'
+
+        response = threaded_request_execution(keywords_list, parameter_name, payload, self.auth)
+
+        return response
+
+    def user_request_response(self, user_request='', country='', language='', page_size='', page=''):
+        """Return response for user request"""
+
+        payload = make_params(country, language, page_size, page)
+
+        parameter_name = 'q'
+        # Changed enpoint for more possible results
+        response = custom_request(user_request, parameter_name, payload, self.auth, endpoint='everything')
+
+        return response
+
+
 def make_params(country, language, page_size, page):
     """Returns dict with parameters"""
     params = dict()
@@ -51,41 +90,4 @@ def threaded_request_execution(parameter_value_list, parameter_name, payload, au
     return result
 
 
-class NewsAPI:
-
-    def __init__(self, api_key: str):
-        self.auth = NewsApiAuth(api_key=api_key)
-
-    def categories_list_response(self, categories_list=[], country='', language='', page_size='', page=''):
-        """Returns response for search by categories list"""
-
-        payload = make_params(country, language, page_size, page)
-
-        parameter_name = 'category'
-
-        response = threaded_request_execution(categories_list, parameter_name, payload, self.auth)
-
-        return response
-
-    def key_words_response(self, keywords_list=[], country='', language='', page_size='', page=''):
-        """Return response for search by key worlds"""
-
-        payload = make_params(country, language, page_size, page)
-
-        parameter_name = 'q'
-
-        response = threaded_request_execution(keywords_list, parameter_name, payload, self.auth)
-
-        return response
-
-    def user_request_response(self, user_request='', country='', language='', page_size='', page=''):
-        """Return response for user request"""
-
-        payload = make_params(country, language, page_size, page)
-
-        parameter_name = 'q'
-        # Changed enpoint for more possible results
-        response = custom_request(user_request, parameter_name, payload, self.auth, endpoint='everything')
-
-        return response
 
