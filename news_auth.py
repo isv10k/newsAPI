@@ -2,7 +2,7 @@ from requests.auth import AuthBase
 
 
 class NewsApiAuth(AuthBase):
-    # Provided by newsapi: https://newsapi.org/docs/authentication
+
     def __init__(self, api_key: str):
         self.api_key = api_key
 
